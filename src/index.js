@@ -14,6 +14,8 @@ fse.ensureDirSync(OUTPUT_DIR);
 fse.ensureDirSync(TEMP_DIR);
 
 (async () => {
+  const sectionOutputPdfs = [];
+
   const sections = fs
     .readdirSync(SECTIONS_DIR, { withFileTypes: true })
     .filter((d) => d.isDirectory());
@@ -22,13 +24,16 @@ fse.ensureDirSync(TEMP_DIR);
     console.log(section.name)
     const sectionPath = path.join(SECTIONS_DIR, section.name);
 
-    const pdfFiles = fs
+    // gets the full path to each pdf file.
+    const pdfPaths = fs
       .readdirSync(sectionPath)
       .filter((f) => f.endsWith(".pdf"))
       .map((f) => path.join(sectionPath, f))
-      .sort();
+      .sort(); // makes sure number order of pdfs is preserved. Ie, 1. BOM, 2. Chem Feed Skids, etc
 
-    if (!pdfFiles.length) continue;
+    console.log(pdfPaths);
+
+    if (!pdfPaths.length) continue;
 
     console.log(`Processing ${section.name}`);
 
@@ -36,6 +41,15 @@ fse.ensureDirSync(TEMP_DIR);
     const outputPdf = path.join(OUTPUT_DIR, `${section.name}.pdf`);
 
     await createHeaderPdf(section.name, headerPdf);
-    await mergePdfs([headerPdf, ...pdfFiles], outputPdf);
+    await mergePdfs([headerPdf, ...pdfPaths], outputPdf);
+
+    sectionOutputPdfs.push(outputPdf);
   }
+
+  // combine all sections into main PDF
+  const MASTER_PDF = path.join(OUTPUT_DIR, 'Finished document.pdf');
+  await mergePdfs(sectionOutputPdfs, MASTER_PDF)
+  
+  // cleanup temp files.
+  fse.removeSync(TEMP_DIR)
 })();

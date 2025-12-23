@@ -4,7 +4,7 @@ const fs = require("fs");
 
 async function createHeaderPdf(title, outputPath) {
   const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([612, 792]); // US Letter
+  const page = pdfDoc.addPage([612, 792]); // US Letter size
 
   const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const fontSize = 28;
