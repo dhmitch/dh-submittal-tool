@@ -1,0 +1,16 @@
+{
+  "name": "dh-submittal-tool",
+  "version": "1.0.0",
+  "description": "Submittal pdf combiner tool.",
+  "license": "ISC",
+  "author": "Mitch Hartigan",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "fs-extra": "^11.3.3",
+    "pdf-lib": "^1.17.1"
+  }
+}
